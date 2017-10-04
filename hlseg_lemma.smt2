@@ -33,15 +33,8 @@
   (store emp x true)
 )
 
-; macro for unfolding hlseg
-(define-fun unfoldhlseg ((x Int) (y Int) (H (Set Int))) Bool
-  (iff (hlseg x y H)
-       (or
-         (and (= x y) (= H emp))
-         (and (not (= x y)) (and (= H (union H2 (singleton x))) (hlseg (next x) y H2)))
-       )
-  )
-)
+;; no macro for unfolding hlseg as the existential quantifier introduces a new constant
+;; needs to be unfolded manually
 
 ; prop to prove: if z \in hlseg(x, y), then n(z) \in hlseg(x, y)
 (define-fun prop_hlseg ((x Int) (y Int) (z Int) (H (Set Int))) Bool
@@ -65,9 +58,17 @@
   )
 )
 
-(assert (unfoldhlseg c1 c2 Hs))
+; equivalent to (unfoldhlseg c1 c2 Hs)
+(assert
+ (iff (hlseg c1 c2 Hs)
+       (or
+         (and (= c1 c2) (= Hs emp))
+         (and (not (= c1 c2)) (and (= Hs (union H2 (singleton c1))) (hlseg (next c1) c2 H2)))
+       )
+  )
+)
 
-; (unfoldhlseg (next c1) c2 H3)
+; equivalent to (unfoldhlseg (next c1) c2 H3)
 (assert
   (iff (hlseg (next c1) c2 H3)
        (or

@@ -30,6 +30,7 @@
 )
 
 ; macro for unfolding hlseg
+; note that hlseg with y as nil (-1) corresponds to the heaplet for the list from x
 (define-fun unfoldhlseg ((x Int) (y Int)) (Set Int)
   (ite (= x y) emp (union (singleton x) (hlseg (next x) y)))
 )
@@ -44,15 +45,15 @@
   )
 )
 
-;; no macro for unfolding lsegrev as it introduces an existential
-;; needs to be unfolded manually
+;; no macro for unfolding lsegrev as the existential quantifier introduces a new constant
+;; would need to be unfolded manually
 
 ; lsegr -> lseg
 (define-fun prop_lsegimpliesb ((x Int) (y Int)) Bool
   (implies (lsegrev x y) (lseg x y))
 )
 
-; skolemized induction principle for lseg equivalence, with recursive defs
+; skolemized induction principle for lsegr -> lseg, with recursive defs
 (define-fun indr_lsegimpliesb ((x Int) (y Int)) Bool
   (implies
     (implies
@@ -78,7 +79,7 @@
   (implies (lseg x t) (theta x y t))
 )
  
-; second induction principle for lseg equivalence
+; second induction principle for lsegr -> lseg
 (define-fun indr_lsegimpliesb_2 ((x Int) (y Int) (t Int)) Bool
   (implies
     (implies
@@ -93,21 +94,17 @@
 )
 
 (assert (= (unfoldhlseg v2 q) (hlseg v2 q)))
+(assert (= (unfoldhlseg d1 d2) (hlseg d1 d2)))
+(assert (= (unfoldhlseg q q) (hlseg q q)))
 
 (assert (unfoldlseg c2 c2))
 (assert (unfoldlseg d1 q))
 (assert (unfoldlseg v2 q))
+(assert (unfoldlseg q q))
 
-; note next(d1) = v2
-; lemmas about hlseg needed (see hlseg_lemmas)
-(assert (implies (and (not (= d1 d2)) (select (hlseg v2 d2) q)) (select (hlseg d1 d2) q)))
+; lemma about hlseg needed (see hlseg_lemma.smt2)
 (assert (implies (select (hlseg (next v2) q) d1)
                  (select (hlseg (next v2) q) (next d1))))
-
-
-;;;;;;;; lseg equivalence (backwards)
-
-(assert (= (next d1) v2))
 
 (echo "no induction principle:")
 (push)

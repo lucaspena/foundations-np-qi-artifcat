@@ -3,7 +3,7 @@
 ; sorted list, key
 (declare-fun list (Int) Bool)
 (declare-fun slist (Int) Bool)
-(declare-fun hlseg (Int) (Set Int))
+(declare-fun hlist (Int) (Set Int))
 (declare-fun key (Int) Int)
 
 (declare-const a Int)
@@ -21,9 +21,9 @@
   (store emp x true)
 )
 
-; macro for unfolding hlseg
-(define-fun unfoldhlseg ((x Int)) (Set Int)
-  (ite (= x -1) emp (union (singleton x) (hlseg (next x))))
+; macro for unfolding hlist
+(define-fun unfoldhlist ((x Int)) (Set Int)
+  (ite (= x -1) emp (union (singleton x) (hlist (next x))))
 )
 
 ; macro for unfolding list
@@ -32,7 +32,7 @@
        (or
          (= x -1)
          (and (not (= x -1))
-              (and (list (next x)) (not (select (hlseg (next x)) x))))
+              (and (list (next x)) (not (select (hlist (next x)) x))))
        )
   )
 )
@@ -43,7 +43,7 @@
        (or
          (or (= x -1) (= (next x) -1))
          (and (and (and (not (= x -1)) (not (= (next x) -1))) (<= (key x) (key (next x)))
-                   (and (slist (next x)) (not (select (hlseg (next x)) x)))))
+                   (and (slist (next x)) (not (select (hlist (next x)) x)))))
        )
   )
 )
@@ -60,7 +60,7 @@
        (or
          (or (= c -1) (= (next c) -1))
          (and (and (and (not (= c -1)) (not (= (next c) -1))) (<= (key c) (key (next c)))
-                   (and (and (list (next c)) (slist (next c))) (not (select (hlseg (next c)) c)))))
+                   (and (and (list (next c)) (slist (next c))) (not (select (hlist (next c)) c)))))
        )
       (list c))
     (implies (slist x) (list x))
@@ -69,7 +69,7 @@
 
 (assert (unfoldlist (next c)))
 (assert (unfoldlist c))
-(assert (= (hlseg (next c)) (unfoldhlseg (next c))))
+(assert (= (hlist (next c)) (unfoldhlist (next c))))
 
 (echo "no induction principle:")
 (push)

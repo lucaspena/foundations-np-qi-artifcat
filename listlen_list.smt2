@@ -40,7 +40,7 @@
   )
 )
 
-; macro for unfolding sorted list
+; macro for unfolding list with length
 (define-fun unfoldlistlen ((x Int) (y Int)) Bool
   (iff (listlen x y)
        (or

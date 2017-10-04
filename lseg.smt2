@@ -22,6 +22,7 @@
 )
 
 ; macro for unfolding hlseg
+; note that hlseg with y as nil (-1) corresponds to the heaplet for the list from x
 (define-fun unfoldhlseg ((x Int) (y Int)) (Set Int)
   (ite (= x y) emp (union (singleton x) (hlseg (next x) y)))
 )
@@ -74,17 +75,12 @@
 (define-fun indr ((x Int)) Bool
   (implies
     (implies
-      (and (or
-             (and (= d v) (= (hlseg d v) emp))
-             (and (and (not (= d v))
-                       (and (lsegv (next d)) (list (next d))))
-                  (not (select (hlseg (next d) v) d)))
-           )
-           (or
-             (= v -1)
-             (and (not (= v -1))
-                  (and (list (next v)) (not (select (hlseg (next v) -1) v))))
-           ))
+      (or
+        (and (= d v) (= (hlseg d v) emp))
+        (and (and (not (= d v))
+                  (and (lsegv (next d)) (list (next d))))
+             (not (select (hlseg (next d) v) d)))
+      )
       (list d))
     (implies (lsegv x) (list x))
   )
@@ -94,7 +90,7 @@
 (assert (unfoldlist (next c)))
 (assert (= (unfoldhlseg (next c) -1) (hlseg (next c) -1)))
 
-; lemma about hlseg needed (see hlseg_lemmas)
+; lemma about hlseg needed (see hlseg_lemma.smt2)
 (assert (implies (select (hlseg (next (next c)) -1) c)
                  (select (hlseg (next (next c)) -1) (next c))))
 
@@ -103,7 +99,7 @@
 (assert (unfoldlist (next d)))
 (assert (= (unfoldhlseg (next d) -1) (hlseg (next d) -1)))
 
-; lemma about hlseg needed (see hlseg_lemmas)
+; lemma about hlseg needed (see hlseg_lemma.smt2)
 (assert (implies (select (hlseg (next (next d)) -1) d)
                  (select (hlseg (next (next d)) -1) (next d))))
 

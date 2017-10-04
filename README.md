@@ -1,20 +1,27 @@
 This is the artifact associated with Section 6.3 in the paper. The entries in
 Table 1 as well as the information in the section regarding the McCarthy 91
-function can all be justified with this code.
+function can all be justified with this code. The user must have z3 installed.
 
 The first column in Table 1 corresponds to an associated file in this
-directory. The second column represents the number of recursive definitions that
-needed to be unfolded in proving each lemma.
+directory. The only smt2 file not in Table 1 is `mccarthy.smt2`, which
+corresponds to the McCarthy 91 function mentioned at the end of the section. The
+second column represents the number of recursive definitions that needed to be
+unfolded in proving each lemma. It is important to note that these definitions
+were unfolded manually, not in any systematic or automatic way.
 
-<!-- heaplet definitions functional for convenience, could be modeled as relations -->
-<!-- (and are when proving heaplet props) -->
+However, the third column represents the depth at which the definitions need to
+be unfolded. At depth 1 are all the ground terms originally present in the lemma
+we are trying to prove. These include skolemized constants as well as constants
+seen in the induction principles added. At depth 2 are all ground terms from
+depth 1, and those which arise from one unfolding of the recursive definitions,
+and so on. Thus, while the definitions were unfolded manually, any automatic
+procedure would unfold the same definitions relatively quickly, since the
+maximum depth unfolded for all examples in Section 6.3 is 2.
 
-All files correspond to entries in Table 1 of the paper, with the exception of
-`hlseg_lemmas/hlseg_lemma2.smt2`, which is a lemma used for verification of
-other properties that is valid without adding an induction principle, and the
-McCarthy 91 function (`mccarthy.smt2`).
-
-The user must have z3 installed. 
+In the examples from Table 1 (besides `hlseg_lemma.smt2`), we represent the
+heaplet functionally for convenience. However, we represent it as a recursive
+definition when proving the property in `hlseg_lemma.smt2` that is necessary in
+proving some other lemmas.
 
 Running the command `z3 file.smt2` will run the inputted file, and check if the
 negation of the lemma is unsatisfiable, generally both with and without the

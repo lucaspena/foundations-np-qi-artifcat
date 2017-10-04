@@ -58,7 +58,7 @@
   )
 )
 
-; list with length as field -> list
+; doubly linked list with length as field -> doubly linked list
 (define-fun prop_dlistlen-list ((x Int) (y Int)) Bool
   (implies (dlistlen x y) (dlist x))
 )

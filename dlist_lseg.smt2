@@ -26,6 +26,7 @@
 )
 
 ; macro for unfolding hlseg (forwards)
+; note that hlseg with y as nil (-1) corresponds to the heaplet for the list from x
 (define-fun unfoldhlseg ((x Int) (y Int)) (Set Int)
   (ite (= x y) emp (union (singleton x) (union (hlseg (next x) y))))
 )
@@ -87,12 +88,9 @@
 (assert (= (unfoldhlseg (next c1) -1) (hlseg (next c1) -1)))
 (assert (= (unfoldhlseg (next c2) -1) (hlseg (next c2) -1)))
 
-; lemma about hlseg needed (see hlseg_lemmas)
+; lemma about hlseg needed (see hlseg_lemma.smt2)
 (assert (implies (select (hlseg (next (next c1)) -1) c1)
                  (select (hlseg (next (next c1)) -1) (next c1))))
-
-
-;;;;;;;;; dlist_lseg
 
 (echo "no induction principle:")
 (push)

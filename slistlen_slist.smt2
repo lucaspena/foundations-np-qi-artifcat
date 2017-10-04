@@ -2,7 +2,7 @@
 
 (declare-fun slist (Int) Bool)
 (declare-fun slistlen ((Int) (Int)) Bool)
-(declare-fun hlseg (Int) (Set Int))
+(declare-fun hlist (Int) (Set Int))
 (declare-fun key (Int) Int)
 
 (declare-const a Int)
@@ -25,9 +25,9 @@
   (store emp x true)
 )
 
-; macro for unfolding hlseg
-(define-fun unfoldhlseg ((x Int)) (Set Int)
-  (ite (= x -1) emp (union (singleton x) (hlseg (next x))))
+; macro for unfolding hlist
+(define-fun unfoldhlist ((x Int)) (Set Int)
+  (ite (= x -1) emp (union (singleton x) (hlist (next x))))
 )
 
 ; macro for unfolding sorted list
@@ -36,7 +36,7 @@
        (or
          (or (= x -1) (= (next x) -1))
          (and (and (and (not (= x -1)) (not (= (next x) -1))) (<= (key x) (key (next x)))
-                   (and (slist (next x)) (not (select (hlseg (next x)) x)))))
+                   (and (slist (next x)) (not (select (hlist (next x)) x)))))
        )
   )
 )
@@ -49,7 +49,7 @@
          (and (and (and (and (not (= x -1)) (not (= (next x) -1))) (> y 1))
                    (<= (key x) (key (next x)))
                    (and (and (slistlen (next x) v) (= v (- y 1)))
-                        (not (select (hlseg (next x)) x)))))
+                        (not (select (hlist (next x)) x)))))
        )
   )
 )
@@ -68,7 +68,7 @@
          (and (and (and (and (not (= c -1)) (not (= (next c) -1))) (> d 1))
                    (<= (key c) (key (next c)))
                    (and (and (and (slistlen (next c) v2) (slist (next c))) (= v2 (- d 1)))
-                        (not (select (hlseg (next c)) c)))))
+                        (not (select (hlist (next c)) c)))))
        )
       (slist c))
     (implies (slistlen x y) (slist x))

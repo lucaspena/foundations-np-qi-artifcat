@@ -24,6 +24,7 @@
 )
 
 ; macro for unfolding hlseg
+; note that hlseg with y as nil (-1) corresponds to the heaplet for the list from x
 (define-fun unfoldhlseg ((x Int) (y Int)) (Set Int)
   (ite (= x y) emp (union (singleton x) (hlseg (next x) y)))
 )
@@ -60,9 +61,9 @@
     (implies
       (and
         (or
-         (= c2 -1)
-         (and (not (= c2 -1))
-              (and (list (next c2)) (not (select (hlseg (next c2) -1) c2))))
+          (= c2 -1)
+          (and (not (= c2 -1))
+               (and (list (next c2)) (not (select (hlseg (next c2) -1) c2))))
         )
         (or
           (and (= c1 c2) (= (hlseg c1 c2) emp))
@@ -71,7 +72,7 @@
                (not (select (hlseg (next c1) c2) c1)))
         ))
       (list c1))
-    (implies (and (list y) (lseg x y)) (list x))
+    (prop_lseglist x y)
   )
 )
 
@@ -81,9 +82,9 @@
     (implies
       (and
         (or
-         (= d2 -1)
-         (and (not (= d2 -1))
-              (and (list (next d2)) (not (select (hlseg (next d2) -1) d2))))
+          (= d2 -1)
+          (and (not (= d2 -1))
+               (and (list (next d2)) (not (select (hlseg (next d2) -1) d2))))
         )
         (or
           (and (= d1 d2) (= (hlseg d1 d2) emp))
@@ -92,7 +93,7 @@
                (not (select (hlseg (next d1) d2) d1)))
         ))
       (list d1))
-    (implies (lseg x y) (list x))
+    (prop_lseglist x y)
   )
 )
 
@@ -100,7 +101,7 @@
 (assert (unfoldlist (next c1)))
 (assert (= (unfoldhlseg (next c1) -1) (hlseg (next c1) -1)))
 
-; lemma about hlseg needed (see hlseg_lemmas)
+; lemma about hlseg needed (see hlseg_lemma.smt2)
 (assert (implies (select (hlseg (next (next c1)) -1) c1)
                  (select (hlseg (next (next c1)) -1) (next c1))))
 
@@ -109,11 +110,9 @@
 (assert (unfoldlist (next d1)))
 (assert (= (unfoldhlseg (next d1) -1) (hlseg (next d1) -1)))
 
-; lemma about hlseg needed (see hlseg_lemmas)
+; lemma about hlseg needed (see hlseg_lemma.smt2)
 (assert (implies (select (hlseg (next (next d1)) -1) d1)
                  (select (hlseg (next (next d1)) -1) (next d1))))
-
-;;;;;;;;; lseglist
 
 (echo "no induction principle:")
 (push)
