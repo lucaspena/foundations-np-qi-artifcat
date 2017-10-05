@@ -83,7 +83,7 @@
            )
       )
       (lseglinord c1 c2))
-    (implies (lseg x y) (lseglinord x y))
+    (prop_lseglinord x y)
   )
 ) 
 
@@ -105,7 +105,7 @@
            )
       )
       (lseglinord c3 c4))
-    (implies (lseg x y) (lseglinord x y))
+    (prop_lseglinord x y)
   )
 )
 

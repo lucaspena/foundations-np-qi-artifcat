@@ -4,7 +4,8 @@
 (declare-fun list (Int) Bool)
 (declare-fun dlist (Int) Bool)
 
-(declare-fun hlist (Int) (Set Int))
+(declare-fun hlistf (Int) (Set Int))
+(declare-fun hlistb (Int) (Set Int))
 (declare-fun key (Int) Int)
 
 (declare-const a Int)
@@ -26,9 +27,14 @@
   (store emp x true)
 )
 
-; macro for unfolding hlist (forwards)
-(define-fun unfoldhlist ((x Int)) (Set Int)
-  (ite (= x -1) emp (union (singleton x) (hlist (next x))))
+; macro for unfolding hlistf
+(define-fun unfoldhlistf ((x Int)) (Set Int)
+  (ite (= x -1) emp (union (singleton x) (hlistf (next x))))
+)
+
+; macro for unfolding hlistb
+(define-fun unfoldhlistb ((x Int)) (Set Int)
+  (ite (= x -1) emp (union (singleton x) (hlistb (prev x))))
 )
 
 ; macro for unfolding list
@@ -37,7 +43,7 @@
        (or
          (= x -1)
          (and (not (= x -1))
-              (and (list (next x)) (not (select (hlist (next x)) x))))
+              (and (list (next x)) (not (select (hlistf (next x)) x))))
        )
   )
 )
@@ -49,7 +55,8 @@
          (or (= x -1) (= (next x) -1))
          (and (and (and (not (= x -1)) (not (= (next x) -1)))
                    (and (and (= (prev (next x)) x) (dlist (next x)))
-                        (not (select (hlist (next x)) x)))))
+                        (and (not (select (hlistf (next x)) x))
+                             (not (select (hlistb (prev x)) x))))))
        )
   )
 )
@@ -67,16 +74,17 @@
          (or (= c -1) (= (next c) -1))
          (and (and (and (not (= c -1)) (not (= (next c) -1)))
                    (and (and (list (next c)) (and (dlist (next c)) (= (prev (next c)) c)))
-                        (not (select (hlist (next c)) c)))))
+                        (and (not (select (hlistf (next c)) c))
+                             (not (select (hlistb (prev c)) c))))))
        )
       (list c))
-    (implies (dlist x) (list x))
+    (prop_dlist-list x)
   )
 )
 
 (assert (unfoldlist c))
 (assert (unfoldlist (next c)))
-(assert (= (hlist (next c)) (unfoldhlist (next c))))
+(assert (= (hlistf (next c)) (unfoldhlistf (next c))))
 
 (echo "no induction principle:")
 (push)

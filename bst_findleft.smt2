@@ -82,7 +82,7 @@
              (and (not (= (left c) -1)) (and (find-leftmost (left c) b) (<= b (key (left c)))))
            ))
       (<= b (key c)))
-    (implies (and (bst x) (find-leftmost x b)) (<= b (key x)))
+    (prop-find-leftmost x)
   )
 )
 

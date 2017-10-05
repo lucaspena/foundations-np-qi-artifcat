@@ -34,8 +34,8 @@
                              (and (mccarthy (+ c 11) (g c d)) (mccarthy (g c d) d))))
        )
       (or (> c 100) (= d 91)))
-      (implies (mccarthy n m) (or (> n 100) (= m 91)))
-   )
+    (prop_mccarthy n m)
+  )
 )
 
 (assert (unfoldmccarthy (+ c 11) (g c d)))

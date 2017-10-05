@@ -2,7 +2,8 @@
 
 (declare-fun dlist (Int) Bool)
 (declare-fun dlistlen ((Int) (Int)) Bool)
-(declare-fun hlist (Int) (Set Int))
+(declare-fun hlistf (Int) (Set Int))
+(declare-fun hlistb (Int) (Set Int))
 (declare-fun key (Int) Int)
 
 (declare-const a Int)
@@ -28,9 +29,14 @@
   (store emp x true)
 )
 
-; macro for unfolding hlist (forwards)
-(define-fun unfoldhlist ((x Int)) (Set Int)
-  (ite (= x -1) emp (union (singleton x) (hlist (next x))))
+; macro for unfolding hlistf
+(define-fun unfoldhlistf ((x Int)) (Set Int)
+  (ite (= x -1) emp (union (singleton x) (hlistf (next x))))
+)
+
+; macro for unfolding hlistb
+(define-fun unfoldhlistb ((x Int)) (Set Int)
+  (ite (= x -1) emp (union (singleton x) (hlistf (prev x))))
 )
 
 ; macro for unfolding doubly linked list
@@ -40,7 +46,8 @@
          (or (= x -1) (= (next x) -1))
          (and (and (and (not (= x -1)) (not (= (next x) -1)))
                    (and (and (= (prev (next x)) x) (dlist (next x)))
-                        (not (select (hlist (next x)) x)))))
+                        (and (not (select (hlistf (next x)) x))
+                             (not (select (hlistb (prev x)) x))))))
        )
   )
 )
@@ -53,7 +60,8 @@
          (and (and (and (not (= x -1)) (and (not (= (next x) -1)) (> y 1)))
                    (and (and (= (prev (next x)) x)
                              (and (dlistlen (next x) v) (= v (- y 1))))
-                        (not (select (hlist (next x)) x)))))
+                        (and (not (select (hlistf (next x)) x))
+                             (not (select (hlistb (prev x)) x))))))
        )
   )
 )
@@ -72,10 +80,11 @@
          (and (and (and (not (= c -1)) (and (not (= (next c) -1)) (> d 1)))
                    (and (and (= (prev (next c)) c)
                              (and (and (dlistlen (next c) v2) (dlist (next c))) (= v2 (- d 1))))
-                        (not (select (hlist (next c)) c)))))
+                        (and (not (select (hlistf (next c)) c))
+                             (not (select (hlistb (prev c)) c))))))
        )
       (dlist c))
-    (implies (dlistlen x y) (dlist x))
+    (prop_dlistlen-list x y)
   )
 )
 

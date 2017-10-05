@@ -71,7 +71,7 @@
                         (not (select (hlist (next c)) c)))))
        )
       (slist c))
-    (implies (slistlen x y) (slist x))
+    (prop_slistlen-list x y)
   )
 )
 

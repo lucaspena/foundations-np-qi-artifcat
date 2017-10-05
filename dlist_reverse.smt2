@@ -2,7 +2,8 @@
 
 ; sorted list, key
 (declare-fun dlist (Int) Bool)
-(declare-fun hlist (Int) (Set Int))
+(declare-fun hlistf (Int) (Set Int))
+(declare-fun hlistb (Int) (Set Int))
 (declare-fun reverse ((Int) (Int)) Bool)
 
 (declare-fun key (Int) Int)
@@ -32,9 +33,14 @@
   (union (singleton (key x)) (keys (next x)))
 )
 
-; macro for unfolding hlist (forwards)
-(define-fun unfoldhlist ((x Int)) (Set Int)
-  (ite (= x -1) emp (union (singleton x) (hlist (next x))))
+; macro for unfolding hlistf
+(define-fun unfoldhlistf ((x Int)) (Set Int)
+  (ite (= x -1) emp (union (singleton x) (hlistf (next x))))
+)
+
+; macro for unfolding hlistb
+(define-fun unfoldhlistb ((x Int)) (Set Int)
+  (ite (= x -1) emp (union (singleton x) (hlistb (prev x))))
 )
 
 ; macro for unfolding doubly linked list
@@ -44,7 +50,8 @@
          (or (= x -1) (= (next x) -1))
          (and (and (and (not (= x -1)) (not (= (next x) -1)))
                    (and (and (= (prev (next x)) x) (dlist (next x)))
-                        (not (select (hlist (next x)) x)))))
+                        (and (not (select (hlistf (next x)) x))
+                             (not (select (hlistb (prev x)) x))))))
        )
   )
 )
@@ -73,7 +80,7 @@
         (and (= c1 c2) (and (reverse (next c1) (prev c2)) (= (keys (next c1)) (keys (prev c2)))))
       )
       (= (keys c1) (keys c2)))
-    (implies (reverse x y) (= (keys x) (keys y)))
+    (prop_revkeys x y)
   )
 )
 

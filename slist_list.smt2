@@ -63,7 +63,7 @@
                    (and (and (list (next c)) (slist (next c))) (not (select (hlist (next c)) c)))))
        )
       (list c))
-    (implies (slist x) (list x))
+    (prop_slist-list x)
   )
 )
 

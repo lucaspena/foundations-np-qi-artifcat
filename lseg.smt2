@@ -67,7 +67,7 @@
              (not (select (hlseg (next c) v) c)))
       )
       (list c))
-    (implies (lsegv x) (list x))
+    (prop x)
   )
 )
 
@@ -82,7 +82,7 @@
              (not (select (hlseg (next d) v) d)))
       )
       (list d))
-    (implies (lsegv x) (list x))
+    (prop x)
   )
 )
 

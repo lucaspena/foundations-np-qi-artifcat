@@ -74,7 +74,7 @@
                             (not (select (hbst (right c)) c))))))
       )
       (btree c))
-    (implies (bst x) (btree x))
+    (prop_bst-btree x)
   )
 )
 

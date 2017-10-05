@@ -74,7 +74,7 @@
                (not (select (hlseg (next c) d) c)))
         ))
       (slist c))
-    (implies (and (slist y) (slseg x y)) (slist x))
+    (prop_slseglist x y)
   )
 )
 
