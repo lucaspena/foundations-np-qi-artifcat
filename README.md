@@ -33,3 +33,5 @@ $IP_s$.
 The user can run the script `test_all.sh`, which checks if the last invocation of
 `(check-sat)` in all files returns `unsat` (the negation of the claim
 unsatisfiable implies the claim is valid).
+
+All files compiled with Z3 version 4.4.1
